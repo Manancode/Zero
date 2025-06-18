@@ -10,6 +10,7 @@ import {
   Reply,
   Sparkles,
   Star,
+  Star2,
   ThreeDots,
   Trash,
   X,
@@ -46,7 +47,7 @@ import { NotesPanel } from './note-panel';
 import { cn, FOLDERS } from '@/lib/utils';
 import MailDisplay from './mail-display';
 import { useTheme } from 'next-themes';
-import { Inbox } from 'lucide-react';
+import { Inbox, ChevronUp, ChevronDown } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import { format } from 'date-fns';
 import { useAtom } from 'jotai';
@@ -583,7 +584,7 @@ export function ThreadDisplay() {
 
               <div class="email-body">
                 <div class="email-content">
-                  ${escapeHtml(message.decodedBody ?? '') || '<p><em>No email content available</em></p>'}
+                  ${escapeHtml(message.decodedBody || '') || '<p><em>No email content available</em></p>'}
                 </div>
               </div>
 
@@ -710,13 +711,13 @@ export function ThreadDisplay() {
   return (
     <div
       className={cn(
-        'flex flex-col',
-        isFullscreen ? 'h-screen' : isMobile ? 'h-full' : 'h-[calc(100dvh-19px)] rounded-xl',
+        'flex flex-col ',
+        isFullscreen ? 'h-screen' : isMobile ? 'h-full' : 'h-[calc(100dvh-6px)]',
       )}
     >
       <div
         className={cn(
-          'bg-panelLight dark:bg-panelDark relative flex flex-col overflow-hidden rounded-xl transition-all duration-300',
+          ' mt-2 relative flex flex-col overflow-hidden  transition-all duration-300 w-full mx-auto max-w-5xl',
           isMobile ? 'h-full' : 'h-full',
           !isMobile && !isFullscreen && 'rounded-r-lg',
           isFullscreen ? 'fixed inset-0 z-50' : '',
@@ -773,9 +774,22 @@ export function ThreadDisplay() {
           </div>
         ) : (
           <>
-            <div
+            
+            <div className={cn('flex min-h-0 flex-1 flex-col', isMobile && 'h-full')}>
+              <ScrollArea
+                className={cn('flex-1', isMobile ? 'h-[calc(100%-1px)]' : 'h-full')}
+                type="auto"
+              >
+                <div
               className={cn(
-                'flex flex-shrink-0 items-center px-1 pb-1 md:px-3 md:pb-[11px] md:pt-[12px]',
+                'flex flex-shrink-0 items-center px-1 pb-1 md:px-3 md:pb-[11px] bg-panelLight dark:bg-panelDark rounded-t-xl',
+                isMobile && 'sticky top-0 z-10',
+              )}
+            >
+              {/* Mobile Navigation Bar - Only show on md and smaller screens */}
+              <div
+              className={cn(
+                'flex flex-shrink-0 items-center justify-between px-1 pb-1 md:px-3 md:pb-[11px] md:pt-[12px] w-full md:hidden',
                 isMobile && 'bg-panelLight dark:bg-panelDark sticky top-0 z-10 mt-2',
               )}
             >
@@ -912,9 +926,9 @@ export function ThreadDisplay() {
                       <TooltipTrigger asChild>
                         <button
                           onClick={() => moveThreadTo('bin')}
-                          className="inline-flex h-7 w-7 items-center justify-center gap-1 overflow-hidden rounded-lg border border-[#FCCDD5] bg-[#FDE4E9] dark:border-[#6E2532] dark:bg-[#411D23]"
+                          className="inline-flex h-7 w-7 items-center justify-center gap-1 overflow-hidden rounded-lg bg-white/90 backdrop-blur-sm hover:bg-white focus:outline-none focus:ring-0 dark:bg-[#313131]/90 dark:hover:bg-[#313131]"
                         >
-                          <Trash className="fill-[#F43F5E]" />
+                          <Trash className="fill-iconLight dark:fill-iconDark" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="bg-white dark:bg-[#313131]">
@@ -979,11 +993,7 @@ export function ThreadDisplay() {
                 </DropdownMenu>
               </div>
             </div>
-            <div className={cn('flex min-h-0 flex-1 flex-col', isMobile && 'h-full')}>
-              <ScrollArea
-                className={cn('flex-1', isMobile ? 'h-[calc(100%-1px)]' : 'h-full')}
-                type="auto"
-              >
+            </div>
                 <div className="pb-4">
                   {(emailData.messages || []).map((message, index) => {
                     const isLastMessage = index === emailData.messages.length - 1;
@@ -994,7 +1004,7 @@ export function ThreadDisplay() {
                         key={message.id}
                         className={cn(
                           'transition-all duration-200',
-                          index > 0 && 'border-border border-t',
+                          index > 0 && 'border-border',
                         )}
                       >
                         <MailDisplay
@@ -1019,16 +1029,11 @@ export function ThreadDisplay() {
               </ScrollArea>
 
               {/* Sticky Reply Compose at Bottom - Only for last message */}
-              {mode &&
-                activeReplyId &&
-                activeReplyId === emailData.messages[emailData.messages.length - 1]?.id && (
-                  <div
-                    className="border-border bg-panelLight dark:bg-panelDark sticky bottom-0 z-10 border-t px-4 py-2"
-                    id={`reply-composer-${activeReplyId}`}
-                  >
-                    <ReplyCompose messageId={activeReplyId} />
-                  </div>
-                )}
+              {mode && activeReplyId && activeReplyId === emailData.messages[emailData.messages.length - 1]?.id && (
+                <div className="sticky bottom-0 z-10 rounded-xl  border-border bg-panelLight dark:bg-panelDark px-4 py-2" id={`reply-composer-${activeReplyId}`}>
+                  <ReplyCompose messageId={activeReplyId} />
+                </div>
+              )}
             </div>
           </>
         )}
