@@ -115,7 +115,7 @@ const Thread = memo(
 
         optimisticState.optimisticLabels.addedLabelIds.forEach((labelId) => {
           if (!labels.some((label) => label.id === labelId)) {
-            labels.push({ id: labelId, name: '' });
+            labels.push({ id: labelId, name: labelId });
           }
         });
       }
@@ -205,7 +205,7 @@ const Thread = memo(
     }, [latestMessage?.body, latestMessage?.sender?.email, settingsData?.settings, queryClient]);
 
     const { labels: threadLabels } = useThreadLabels(
-      getThreadData?.labels ? getThreadData.labels.map((l) => l.id) : [],
+      optimisticLabels ? optimisticLabels.map((l) => l.id) : [],
     );
 
     const mainSearchTerm = useMemo(() => {
