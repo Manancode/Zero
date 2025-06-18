@@ -1257,4 +1257,12 @@ export class OutlookMailManager implements MailManager {
       throw new StandardizedError(error, operation, context);
     }
   }
+  public async updatePrimaryEmailAlias(email: string) {
+    return this.withErrorHandler('updatePrimaryEmailAlias', async () => {
+      // Microsoft Graph API doesn't support multiple sendAs aliases in the same way
+      // For now, this is a no-op for Outlook
+      // TODO: implement this for microsoft
+      console.log('updatePrimaryEmailAlias not implemented for Outlook');
+    });
+  }
 }

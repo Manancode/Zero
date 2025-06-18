@@ -28,6 +28,7 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 import { useTRPC } from '@/providers/query-provider';
 import { useMutation } from '@tanstack/react-query';
 import { useRef, useState, useEffect } from 'react';
+import { useSettings } from '@/hooks/use-settings';
 import { cn, formatFileSize } from '@/lib/utils';
 import { useThread } from '@/hooks/use-threads';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -107,6 +108,7 @@ export function EmailComposer({
   editorClassName,
 }: EmailComposerProps) {
   const { data: aliases } = useEmailAliases();
+  const { data: settings } = useSettings();
   const [showCc, setShowCc] = useState(initialCc.length > 0);
   const [showBcc, setShowBcc] = useState(initialBcc.length > 0);
   const [isLoading, setIsLoading] = useState(false);
@@ -177,7 +179,11 @@ export function EmailComposer({
       subject: initialSubject,
       message: initialMessage,
       attachments: initialAttachments,
-      fromEmail: aliases?.find((alias) => alias.primary)?.email || aliases?.[0]?.email || '',
+      fromEmail:
+        settings?.settings?.defaultEmailAlias ||
+        aliases?.find((alias) => alias.primary)?.email ||
+        aliases?.[0]?.email ||
+        '',
     },
   });
 
