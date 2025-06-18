@@ -261,6 +261,18 @@ export function EmailComposer({
     // For forward, we start with empty recipients
   }, [mode, emailData?.latest, activeConnection?.email]);
 
+  // keep fromEmail in sync when settings or aliases load afterwards
+  useEffect(() => {
+    const preferred =
+      settings?.settings?.defaultEmailAlias ??
+      aliases?.find((a) => a.primary)?.email ??
+      aliases?.[0]?.email;
+
+    if (preferred && form.getValues('fromEmail') !== preferred) {
+      form.setValue('fromEmail', preferred, { shouldDirty: false });
+    }
+  }, [settings?.settings?.defaultEmailAlias, aliases]);
+
   const { watch, setValue, getValues } = form;
   const toEmails = watch('to');
   const ccEmails = watch('cc');

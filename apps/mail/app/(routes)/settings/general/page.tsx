@@ -162,8 +162,8 @@ export default function GeneralPage() {
     setIsSaving(true);
     const saved = data?.settings ? { ...data.settings } : undefined;
     try {
-      const emailAliasChanged =
-        saved?.defaultEmailAlias !== values.defaultEmailAlias && values.defaultEmailAlias;
+      // const emailAliasChanged =
+      //   saved?.defaultEmailAlias !== values.defaultEmailAlias && values.defaultEmailAlias;
 
       await saveUserSettings(values);
       queryClient.setQueryData(trpc.settings.get.queryKey(), (updater) => {

@@ -1262,7 +1262,10 @@ export class OutlookMailManager implements MailManager {
       // Microsoft Graph API doesn't support multiple sendAs aliases in the same way
       // For now, this is a no-op for Outlook
       // TODO: implement this for microsoft
-      console.log('updatePrimaryEmailAlias not implemented for Outlook');
+      console.warn(
+        '[Outlook Driver] updatePrimaryEmailAlias is not implemented – Graph API limitation',
+      );
+      throw new Error('updatePrimaryEmailAlias is not implemented for OutlookMailManager yet');
     });
   }
 }

@@ -1200,6 +1200,7 @@ export class GoogleMailManager implements MailManager {
       //     isPrimary: true,
       //   },
       // });
+      throw new Error('updatePrimaryEmailAlias is not implemented for GoogleMailManager yet');
     });
   }
 }
